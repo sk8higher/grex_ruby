@@ -30,7 +30,7 @@ RSpec.describe GrexRuby do
   it 'works with digits' do
     result = GrexRuby.generate(%w[123], convert_digits: true)
 
-    expect(result).to eq('^\\d\\d\\d$')
+    expect(result).to eq('^\\p{Nd}\\p{Nd}\\p{Nd}$')
   end
 
   it 'raises TypeError if a string is passed as an argument' do
@@ -41,11 +41,44 @@ RSpec.describe GrexRuby do
     expect { GrexRuby.generate(['cat', 123]) }.to raise_error(TypeError)
   end
 
-  it 'treats dot as a dot withing screening' do
+  it 'escapes literal dot' do
     pattern = GrexRuby.generate(['a.b'])
     regexp = Regexp.new(pattern)
 
     expect(regexp.match?('a.b')).to eq(true)
     expect(regexp.match?('axb')).to eq(false)
+  end
+
+  it 'works with unicode: cyrillic' do
+    pattern = GrexRuby.generate(%w[кот кит])
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('кот')).to eq(true)
+    expect(regexp.match?('кит')).to eq(true)
+    expect(regexp.match?('кат')).to eq(false)
+  end
+
+  it 'works with unicode: emojis' do
+    pattern = GrexRuby.generate(['🐈'])
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('🐈')).to eq(true)
+    expect(regexp.match?('🐕')).to eq(false)
+  end
+
+  it 'works with unicode: arabic digits' do
+    pattern = GrexRuby.generate(['١٢٣'], convert_digits: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('١٢٣')).to eq(true)
+  end
+
+  it 'preserves literal backslashes when converting digit' do
+    pattern = GrexRuby.generate(['\\d', '123'], convert_digits: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('\\d')).to eq(true)
+    expect(regexp.match?('ddd')).to eq(false)
+    expect(regexp.match?('123')).to eq(true)
   end
 end

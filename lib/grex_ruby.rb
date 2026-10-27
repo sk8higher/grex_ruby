@@ -4,11 +4,34 @@ require_relative 'grex_ruby/version'
 require 'grex_ruby/grex_ruby'
 
 module GrexRuby
-  private_class_method :generate_native
-
   class Error < StandardError; end
 
   def self.generate(samples, convert_digits: false)
-    generate_native(samples, convert_digits)
+    pattern = generate_native(samples, convert_digits)
+    adapt_pattern(pattern)
   end
+
+  def self.adapt_pattern(pattern)
+    chars = pattern.chars
+    result = +''
+    index = 0
+
+    while index < chars.length
+      if chars[index] == '\\'
+        result << if chars[index + 1] == 'd'
+                    '\p{Nd}'
+                  else
+                    chars[index, 2].join
+                  end
+        index += 2
+      else
+        result << chars[index]
+        index += 1
+      end
+    end
+
+    result
+  end
+
+  private_class_method :generate_native, :adapt_pattern
 end
