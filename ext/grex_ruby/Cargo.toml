@@ -11,6 +11,7 @@ crate-type = ["cdylib"]
 [dependencies]
 magnus = { version = "0.9" }
 rb-sys = { version = "0.9", features = ["stable-api-compiled-fallback"] }
+grex = "1.4.6"
 
 [build-dependencies]
 rb-sys-env = "0.2.2"
