@@ -1,23 +1,19 @@
+use grex::RegExpBuilder;
 use magnus::{function, prelude::*, Error, Ruby};
 
-pub fn hello(subject: String) -> String {
-    format!("Hello {subject}, from Rust!")
+pub fn generate(ruby: &Ruby, samples: Vec<String>) -> Result<String, Error> {
+    if samples.is_empty() {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            "samples must not be empty",
+        ));
+    }
+    Ok(RegExpBuilder::from(&samples).build())
 }
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("GrexRuby")?;
-    module.define_singleton_method("hello", function!(hello, 1))?;
+    module.define_singleton_method("generate", function!(generate, 1))?;
     Ok(())
-}
-
-#[cfg(test)]
-mod tests {
-    use rb_sys_test_helpers::ruby_test;
-    use super::hello;
-
-    #[ruby_test]
-    fn test_hello() {
-        assert_eq!("Hello world, from Rust!", hello("world".to_string()));
-    }
 }

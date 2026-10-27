@@ -15,6 +15,3 @@ grex = "1.4.6"
 
 [build-dependencies]
 rb-sys-env = "0.2.2"
-
-[dev-dependencies]
-rb-sys-test-helpers = { version = "0.2.2" }
