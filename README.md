@@ -5,7 +5,29 @@ It generates a regular expression pattern from an array of example strings.
 
 ## Installation
 
-The gem is not published yet. To build it locally, follow the development instructions below.
+Install from RubyGems:
+
+```bash
+gem install grex_ruby
+```
+
+Or add it to your application's bundle:
+
+```bash
+bundle add grex_ruby
+```
+
+GrexRuby requires Ruby 3.2 or newer. The gem builds its native extension during
+installation, so Rust (including Cargo), a C/C++ compiler, Make, libclang, and
+matching Ruby development headers must be available.
+
+Follow the dependency setup instructions for [Linux](#linux) or
+[Windows](#windows-64-bit-rubyinstaller-with-ucrt) below before installing.
+On Windows, set `LIBCLANG_PATH` and `RUST_TARGET` as shown there, then install with:
+
+```powershell
+ridk.cmd exec gem install grex_ruby
+```
 
 ## Usage
 
@@ -23,10 +45,10 @@ GrexRuby.generate(%w[cat])
 
 Both keyword options default to `false`:
 
-| Option | Behavior when enabled |
-| --- | --- |
-| `convert_digits` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
-| `convert_repetitions` | Converts repeated substrings to quantifiers such as `{3}`. |
+| Option                | Behavior when enabled                                           |
+| --------------------- | --------------------------------------------------------------- |
+| `convert_digits`      | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
+| `convert_repetitions` | Converts repeated substrings to quantifiers such as `{3}`.      |
 
 ```ruby
 GrexRuby.generate(%w[123])
