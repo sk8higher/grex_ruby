@@ -161,3 +161,7 @@ command through `ridk.cmd exec` with the environment variables shown above.
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/sk8higher/grex_ruby.
+
+## License
+
+GrexRuby is available under the [MIT License](LICENSE.txt).
