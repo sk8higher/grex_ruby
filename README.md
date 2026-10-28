@@ -1,8 +1,7 @@
 # GrexRuby
 
-GrexRuby is a binding gem to use Grex Rust library.
-
-It generates a regular expression pattern as a Ruby String from an array of example strings.
+GrexRuby provides Ruby bindings for the Rust library [grex](https://github.com/pemistahl/grex).
+It generates a regular expression pattern from an array of example strings.
 
 ## Installation
 
@@ -10,35 +9,62 @@ The gem is not published yet. To build it locally, follow the development instru
 
 ## Usage
 
-The main module is GrexRuby. It has generate method, which accepts an array of strings and a `convert_digits` boolean flag to convert the digits too.
-
-### Examples:
+`GrexRuby.generate` accepts a non-empty array of strings and returns a Ruby `String`.
 
 ```ruby
-# returns '^a(?:aa?)?$'
+require 'grex_ruby'
+
 GrexRuby.generate(%w[a aa aaa])
+# => "^a(?:aa?)?$"
 
-# returns '^cat$'
 GrexRuby.generate(%w[cat])
-
-# returns '^123$' with convert_digits: false (by default)
-GrexRuby.generate(%w[123])
-
-# returns '^\\d\\d\\d$' with convert_digits: true
-GrexRuby.generate(%w[123], convert_digits: true)
+# => "^cat$"
 ```
 
-Result can be passed into Regexp.new:
+Both keyword options default to `false`:
+
+| Option | Behavior when enabled |
+| --- | --- |
+| `convert_digits` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
+| `convert_repetitions` | Converts repeated substrings to quantifiers such as `{3}`. |
+
+```ruby
+GrexRuby.generate(%w[123])
+# => "^123$"
+
+GrexRuby.generate(%w[123], convert_digits: true)
+# => "^\\p{Nd}\\p{Nd}\\p{Nd}$"
+
+GrexRuby.generate(['aaa'], convert_repetitions: true)
+# => "^a{3}$"
+
+GrexRuby.generate(['111'], convert_digits: true, convert_repetitions: true)
+# => "^\\p{Nd}{3}$"
+```
+
+Digit conversion allows other decimal digits to match too, including non-ASCII
+digits. GrexRuby adapts grex's `\d` tokens to `\p{Nd}` because Ruby's `\d` matches
+only ASCII digits.
+
+Pass the returned pattern to `Regexp.new` to match strings. Special characters
+in the examples, such as the dot below, are escaped:
 
 ```ruby
 pattern = GrexRuby.generate(['a.b'])
+# => "^a\\.b$"
+
 regexp = Regexp.new(pattern)
 
-regexp.match?('a.b') # returns true
+regexp.match?('a.b')
+# => true
+
+regexp.match?('axb')
+# => false
 ```
 
-If you're passing an empty array, it raises `ArgumentError` with `'samples must not be empty'` message.
-If you're passing an array that contains something wlse than strings, it raises `TypeError`.
+An empty array raises `ArgumentError` with the message `samples must not be empty`.
+Passing a string instead of an array, or an array containing an integer, raises
+`TypeError`.
 
 ## Development
 
@@ -123,7 +149,14 @@ installations, such as devkitPro, are also present.
 `bundle exec rake` compiles the extension before running the tests;
 `bundle exec rake spec` only runs the tests and requires an existing build.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+### Build a local gem
+
+```bash
+bundle exec rake build
+```
+
+The package is written to `pkg/grex_ruby-<version>.gem`. On Windows, run the
+command through `ridk.cmd exec` with the environment variables shown above.
 
 ## Contributing
 
