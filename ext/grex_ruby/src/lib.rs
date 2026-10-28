@@ -1,7 +1,12 @@
 use grex::RegExpBuilder;
 use magnus::{function, prelude::*, Error, Ruby};
 
-pub fn generate(ruby: &Ruby, samples: Vec<String>, convert_digits: bool) -> Result<String, Error> {
+pub fn generate(
+    ruby: &Ruby,
+    samples: Vec<String>,
+    convert_digits: bool,
+    convert_repetitions: bool,
+) -> Result<String, Error> {
     if samples.is_empty() {
         return Err(Error::new(
             ruby.exception_arg_error(),
@@ -14,12 +19,16 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, convert_digits: bool) -> Resu
         builder.with_conversion_of_digits();
     }
 
+    if convert_repetitions {
+        builder.with_conversion_of_repetitions();
+    }
+
     Ok(builder.build())
 }
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
     let module = ruby.define_module("GrexRuby")?;
-    module.define_singleton_method("generate_native", function!(generate, 2))?;
+    module.define_singleton_method("generate_native", function!(generate, 3))?;
     Ok(())
 }

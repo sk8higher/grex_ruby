@@ -6,8 +6,8 @@ require 'grex_ruby/grex_ruby'
 module GrexRuby
   class Error < StandardError; end
 
-  def self.generate(samples, convert_digits: false)
-    pattern = generate_native(samples, convert_digits)
+  def self.generate(samples, convert_digits: false, convert_repetitions: false)
+    pattern = generate_native(samples, convert_digits, convert_repetitions)
     adapt_pattern(pattern)
   end
 

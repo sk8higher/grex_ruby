@@ -81,4 +81,28 @@ RSpec.describe GrexRuby do
     expect(regexp.match?('ddd')).to eq(false)
     expect(regexp.match?('123')).to eq(true)
   end
+
+  it 'works with char repetitions' do
+    result = GrexRuby.generate(['aaa'], convert_repetitions: true)
+
+    expect(result).to eq('^a{3}$')
+  end
+
+  it 'works with char repetitions false' do
+    result = GrexRuby.generate(['aaa'])
+
+    expect(result).to eq('^aaa$')
+  end
+
+  it 'works with char repetitions and convert digits' do
+    pattern = GrexRuby.generate(['111'], convert_digits: true, convert_repetitions: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('111')).to eq(true)
+    expect(pattern).to eq('^\p{Nd}{3}$')
+
+    expect(regexp.match?('١٢٣')).to eq(true)
+    expect(regexp.match?('11')).to eq(false)
+    expect(regexp.match?('1111')).to eq(false)
+  end
 end
