@@ -17,3 +17,5 @@ gem 'rspec', '~> 3.0'
 
 # Build Prism from source to support Ruby 3.2.
 gem 'prism', force_ruby_platform: true
+
+gem 'fiddle'
