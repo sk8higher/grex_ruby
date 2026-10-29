@@ -1,7 +1,13 @@
 module Grex
   VERSION: String
 
-  def self.generate: (Array[String], ?convert_digits: bool, ?convert_repetitions: bool) -> String
+  def self.generate: (
+    Array[String],
+    ?convert_digits: bool,
+    ?convert_repetitions: bool,
+    ?minimum_substring_length: Integer,
+    ?minimum_repetitions: Integer
+  ) -> String
 end
 
 module GrexRuby = Grex
