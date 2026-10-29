@@ -8,6 +8,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
         options.fetch(ruby.to_symbol("minimum_substring_length"))?;
     let minimum_repetitions: u32 = options.fetch(ruby.to_symbol("minimum_repetitions"))?;
     let anchors: bool = options.fetch(ruby.to_symbol("anchors"))?;
+    let ignore_case: bool = options.fetch(ruby.to_symbol("ignore_case"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -38,6 +39,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if convert_repetitions {
         builder.with_conversion_of_repetitions();
+    }
+
+    if ignore_case {
+        builder.with_case_insensitive_matching();
     }
 
     builder.with_minimum_substring_length(minimum_substring_length);

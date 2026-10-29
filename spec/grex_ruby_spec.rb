@@ -124,7 +124,10 @@ RSpec.describe Grex do
   end
 
   it 'rejects a zero minimum_substring_length with ArgumentError' do
-    expect { Grex.generate(%w[aaaa], minimum_substring_length: 0) }.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
+    expect {
+      Grex.generate(%w[aaaa],
+                    minimum_substring_length: 0)
+    }.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
   end
 
   it 'leaves substrings with fewer repetitions than minimum_repetitions unconverted' do
@@ -140,7 +143,10 @@ RSpec.describe Grex do
   end
 
   it 'rejects a zero minimum_repetitions with ArgumentError' do
-    expect { Grex.generate(%w[aaaa], minimum_repetitions: 0) }.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
+    expect {
+      Grex.generate(%w[aaaa],
+                    minimum_repetitions: 0)
+    }.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
   end
 
   it 'matches within a larger string when anchors are disabled' do
@@ -149,5 +155,29 @@ RSpec.describe Grex do
 
     expect(regexp.match?('a cat sleeps')).to eq(true)
     expect(pattern).to eq('cat')
+  end
+
+  it 'works with ignore_case' do
+    pattern = Grex.generate(['cat'], ignore_case: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('cat')).to eq(true)
+    expect(regexp.match?('Cat')).to eq(true)
+    expect(regexp.match?('CAT')).to eq(true)
+  end
+
+  it 'works with ignore_case: unicode' do
+    pattern = Grex.generate(['кот'], ignore_case: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('КОТ')).to eq(true)
+  end
+
+  it 'matches case-sensitivity by default' do
+    pattern = Grex.generate(['cat'])
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('cat')).to eq(true)
+    expect(regexp.match?('CAT')).to eq(false)
   end
 end
