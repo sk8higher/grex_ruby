@@ -8,7 +8,8 @@ module Grex
     ?minimum_substring_length: Integer,
     ?minimum_repetitions: Integer
     ?anchors: bool,
-    ?ignore_case: bool
+    ?ignore_case: bool,
+    ?capturing_groups: bool,
   ) -> String
 end
 

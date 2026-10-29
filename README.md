@@ -56,6 +56,8 @@ Keyword options:
 | `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
 | `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
 | `anchors` | `true` | Keeps grex's `^` and `$` line anchors; set to `false` to omit both. |
+| `ignore_case` | `false` | Generates a pattern that matches without regard to letter case. |
+| `capturing_groups` | `false` | Uses capturing groups instead of non-capturing groups. |
 
 The two minimum settings affect generation when `convert_repetitions: true`.
 Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
@@ -113,6 +115,26 @@ regexp.match?('a.b')
 regexp.match?('axb')
 # => false
 ```
+
+### Capturing groups
+
+By default, groups introduced by grex are non-capturing. Set
+`capturing_groups: true` to make their matches available through `MatchData#captures`:
+
+```ruby
+pattern = Grex.generate(%w[cat dog], capturing_groups: true)
+regexp = Regexp.new(pattern)
+
+regexp.match('cat').captures
+# => ["cat"]
+
+regexp.match('dog').captures
+# => ["dog"]
+```
+
+This option changes groups created by grex; it does not force a group around
+every pattern. The `capturing_groups` and `ignore_case` options will be available
+in the next release and are not part of 0.1.0.
 
 ### Anchors in Ruby
 

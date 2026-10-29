@@ -9,6 +9,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let minimum_repetitions: u32 = options.fetch(ruby.to_symbol("minimum_repetitions"))?;
     let anchors: bool = options.fetch(ruby.to_symbol("anchors"))?;
     let ignore_case: bool = options.fetch(ruby.to_symbol("ignore_case"))?;
+    let capturing_groups: bool = options.fetch(ruby.to_symbol("capturing_groups"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -50,6 +51,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if !anchors {
         builder.without_anchors();
+    }
+
+    if capturing_groups {
+        builder.with_capturing_groups();
     }
 
     Ok(builder.build())

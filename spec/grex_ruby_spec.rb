@@ -173,6 +173,28 @@ RSpec.describe Grex do
     expect(regexp.match?('КОТ')).to eq(true)
   end
 
+  it 'does not capture grouped alternatives by default' do
+    pattern = Grex.generate(%w[cat dog])
+    regexp = Regexp.new(pattern)
+
+    %w[cat dog].each do |sample|
+      match = regexp.match(sample)
+      expect(match).not_to be_nil
+      expect(match.captures).to eq([])
+    end
+  end
+
+  it 'captures grouped alternatives when capturing_groups is enabled' do
+    pattern = Grex.generate(%w[cat dog], capturing_groups: true)
+    regexp = Regexp.new(pattern)
+
+    %w[cat dog].each do |sample|
+      match = regexp.match(sample)
+      expect(match).not_to be_nil
+      expect(match.captures).to eq([sample])
+    end
+  end
+
   it 'matches case-sensitivity by default' do
     pattern = Grex.generate(['cat'])
     regexp = Regexp.new(pattern)
