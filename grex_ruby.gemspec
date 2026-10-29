@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
         f.start_with?(*%w[bin/ Gemfile .gitignore .rspec spec/])
     end
   end
-  spec.files = (spec.files + ['LICENSE.txt']).uniq
+  spec.files = (spec.files + ['LICENSE.txt', 'THIRD_PARTY_NOTICES.md'] + Dir['licenses/*.txt']).uniq
   spec.bindir = 'exe'
   spec.executables = spec.files.grep(%r{\Aexe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']

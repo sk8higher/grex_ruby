@@ -215,4 +215,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/sk8hig
 
 ## License
 
-Grex is available under the [MIT License](LICENSE.txt).
+The Ruby bindings in this project are available under the [MIT License](LICENSE.txt).
+The underlying Rust library grex is licensed under
+[Apache License 2.0](licenses/grex-APACHE-2.0.txt).
+Dependencies retain their own licenses; see [third-party notices](THIRD_PARTY_NOTICES.md).
