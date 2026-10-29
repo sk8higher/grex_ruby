@@ -110,4 +110,20 @@ RSpec.describe Grex do
     expect(regexp.match?('11')).to eq(false)
     expect(regexp.match?('1111')).to eq(false)
   end
+
+  it 'leaves repetitions shorter than minimum_substring_length unconverted' do
+    result = Grex.generate(%w[aaaa], convert_repetitions: true, minimum_substring_length: 2)
+
+    expect(result).to eq('^aaaa$')
+  end
+
+  it 'converts repetitions whose substring length meets minimum_substring_length' do
+    result = Grex.generate(%w[ababab], convert_repetitions: true, minimum_substring_length: 2)
+
+    expect(result).to eq('^(?:ab){3}$')
+  end
+
+  it 'rejects a zero minimum_substring_length with ArgumentError' do
+    expect { Grex.generate(%w[aaaa], minimum_substring_length: 0) }.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
+  end
 end

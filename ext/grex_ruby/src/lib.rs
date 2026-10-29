@@ -1,13 +1,11 @@
 use grex::RegExpBuilder;
-use magnus::{function, prelude::*, Error, Ruby, RHash};
+use magnus::{function, prelude::*, Error, RHash, Ruby};
 
-pub fn generate(
-    ruby: &Ruby,
-    samples: Vec<String>,
-    options: RHash,
-) -> Result<String, Error> {
+pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<String, Error> {
     let convert_digits: bool = options.fetch(ruby.to_symbol("convert_digits"))?;
     let convert_repetitions: bool = options.fetch(ruby.to_symbol("convert_repetitions"))?;
+    let minimum_substring_length: u32 =
+        options.fetch(ruby.to_symbol("minimum_substring_length"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -15,6 +13,14 @@ pub fn generate(
             "samples must not be empty",
         ));
     }
+
+    if minimum_substring_length == 0 {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            "minimum_substring_length must be greater than zero",
+        ));
+    }
+
     let mut builder = RegExpBuilder::from(&samples);
 
     if convert_digits {
@@ -24,6 +30,8 @@ pub fn generate(
     if convert_repetitions {
         builder.with_conversion_of_repetitions();
     }
+
+    builder.with_minimum_substring_length(minimum_substring_length);
 
     Ok(builder.build())
 }
