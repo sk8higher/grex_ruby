@@ -19,3 +19,5 @@ gem 'rspec', '~> 3.0'
 gem 'prism', force_ruby_platform: true
 
 gem 'fiddle'
+
+gem 'rubocop', require: false
