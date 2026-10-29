@@ -55,6 +55,7 @@ Keyword options:
 | `convert_repetitions` | `false` | Converts repeated substrings to quantifiers such as `{3}`. |
 | `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
 | `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
+| `anchors` | `true` | Keeps grex's `^` and `$` line anchors; set to `false` to omit both. |
 
 The two minimum settings affect generation when `convert_repetitions: true`.
 Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
@@ -112,6 +113,35 @@ regexp.match?('a.b')
 regexp.match?('axb')
 # => false
 ```
+
+### Anchors in Ruby
+
+By default, grex generates `^` and `$` anchors. In Ruby these match the beginning
+and end of a line, so the pattern can match a complete line inside multiline text:
+
+```ruby
+regexp = Regexp.new(Grex.generate(['cat']))
+
+regexp.match?("dog\ncat\nbird")
+# => true
+```
+
+Use `anchors: false` to allow matches within a line as well:
+
+```ruby
+pattern = Grex.generate(['cat'], anchors: false)
+# => "cat"
+
+Regexp.new(pattern).match?('a cat sleeps')
+# => true
+```
+
+Ruby's `\A` and `\z` anchor the entire string rather than individual lines.
+Grex preserves grex's line anchors and does not automatically replace them with
+`\A` and `\z`. The `anchors` option will be available in the next release;
+it is not part of 0.1.0.
+
+### Invalid input
 
 An empty array raises `ArgumentError` with the message `samples must not be empty`.
 Passing a string instead of an array, or an array containing an integer, raises
