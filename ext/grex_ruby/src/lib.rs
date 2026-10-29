@@ -7,6 +7,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let minimum_substring_length: u32 =
         options.fetch(ruby.to_symbol("minimum_substring_length"))?;
     let minimum_repetitions: u32 = options.fetch(ruby.to_symbol("minimum_repetitions"))?;
+    let anchors: bool = options.fetch(ruby.to_symbol("anchors"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -41,6 +42,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     builder.with_minimum_substring_length(minimum_substring_length);
     builder.with_minimum_repetitions(minimum_repetitions);
+
+    if !anchors {
+        builder.without_anchors();
+    }
 
     Ok(builder.build())
 }

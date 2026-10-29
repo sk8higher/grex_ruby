@@ -142,4 +142,12 @@ RSpec.describe Grex do
   it 'rejects a zero minimum_repetitions with ArgumentError' do
     expect { Grex.generate(%w[aaaa], minimum_repetitions: 0) }.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
   end
+
+  it 'matches within a larger string when anchors are disabled' do
+    pattern = Grex.generate(['cat'], anchors: false)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('a cat sleeps')).to eq(true)
+    expect(pattern).to eq('cat')
+  end
 end
