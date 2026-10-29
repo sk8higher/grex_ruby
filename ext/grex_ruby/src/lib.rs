@@ -6,6 +6,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let convert_repetitions: bool = options.fetch(ruby.to_symbol("convert_repetitions"))?;
     let minimum_substring_length: u32 =
         options.fetch(ruby.to_symbol("minimum_substring_length"))?;
+    let minimum_repetitions: u32 = options.fetch(ruby.to_symbol("minimum_repetitions"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -21,6 +22,13 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
         ));
     }
 
+    if minimum_repetitions == 0 {
+        return Err(Error::new(
+            ruby.exception_arg_error(),
+            "minimum_repetitions must be greater than zero",
+        ));
+    }
+
     let mut builder = RegExpBuilder::from(&samples);
 
     if convert_digits {
@@ -32,6 +40,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     }
 
     builder.with_minimum_substring_length(minimum_substring_length);
+    builder.with_minimum_repetitions(minimum_repetitions);
 
     Ok(builder.build())
 }

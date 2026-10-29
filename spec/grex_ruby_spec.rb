@@ -126,4 +126,20 @@ RSpec.describe Grex do
   it 'rejects a zero minimum_substring_length with ArgumentError' do
     expect { Grex.generate(%w[aaaa], minimum_substring_length: 0) }.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
   end
+
+  it 'leaves substrings with fewer repetitions than minimum_repetitions unconverted' do
+    result = Grex.generate(%w[aa], convert_repetitions: true, minimum_repetitions: 2)
+
+    expect(result).to eq('^aa$')
+  end
+
+  it 'converts substrings with enough repetitions to meet minimum_repetitions' do
+    result = Grex.generate(%w[aaa], convert_repetitions: true, minimum_repetitions: 2)
+
+    expect(result).to eq('^a{3}$')
+  end
+
+  it 'rejects a zero minimum_repetitions with ArgumentError' do
+    expect { Grex.generate(%w[aaaa], minimum_repetitions: 0) }.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
+  end
 end
