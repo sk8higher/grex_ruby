@@ -1,6 +1,6 @@
-# GrexRuby
+# Grex
 
-GrexRuby provides Ruby bindings for the Rust library [grex](https://github.com/pemistahl/grex).
+Grex provides Ruby bindings for the Rust library [grex](https://github.com/pemistahl/grex).
 It generates a regular expression pattern from an array of example strings.
 
 ## Installation
@@ -17,7 +17,7 @@ Or add it to your application's bundle:
 bundle add grex_ruby
 ```
 
-GrexRuby requires Ruby 3.2 or newer. The gem builds its native extension during
+Grex requires Ruby 3.2 or newer. The gem builds its native extension during
 installation, so Rust (including Cargo), a C/C++ compiler, Make, libclang, and
 matching Ruby development headers must be available.
 
@@ -31,15 +31,19 @@ ridk.cmd exec gem install grex_ruby
 
 ## Usage
 
-`GrexRuby.generate` accepts a non-empty array of strings and returns a Ruby `String`.
+`Grex.generate` accepts a non-empty array of strings and returns a Ruby `String`.
+
+The gem name and require path remain `grex_ruby`. `GrexRuby` is kept as an alias
+of `Grex` for compatibility with version 0.1.0. The `Grex` module name will be
+available in the next release; version 0.1.0 uses `GrexRuby`.
 
 ```ruby
 require 'grex_ruby'
 
-GrexRuby.generate(%w[a aa aaa])
+Grex.generate(%w[a aa aaa])
 # => "^a(?:aa?)?$"
 
-GrexRuby.generate(%w[cat])
+Grex.generate(%w[cat])
 # => "^cat$"
 ```
 
@@ -51,28 +55,28 @@ Both keyword options default to `false`:
 | `convert_repetitions` | Converts repeated substrings to quantifiers such as `{3}`.      |
 
 ```ruby
-GrexRuby.generate(%w[123])
+Grex.generate(%w[123])
 # => "^123$"
 
-GrexRuby.generate(%w[123], convert_digits: true)
+Grex.generate(%w[123], convert_digits: true)
 # => "^\\p{Nd}\\p{Nd}\\p{Nd}$"
 
-GrexRuby.generate(['aaa'], convert_repetitions: true)
+Grex.generate(['aaa'], convert_repetitions: true)
 # => "^a{3}$"
 
-GrexRuby.generate(['111'], convert_digits: true, convert_repetitions: true)
+Grex.generate(['111'], convert_digits: true, convert_repetitions: true)
 # => "^\\p{Nd}{3}$"
 ```
 
 Digit conversion allows other decimal digits to match too, including non-ASCII
-digits. GrexRuby adapts grex's `\d` tokens to `\p{Nd}` because Ruby's `\d` matches
+digits. Grex adapts grex's `\d` tokens to `\p{Nd}` because Ruby's `\d` matches
 only ASCII digits.
 
 Pass the returned pattern to `Regexp.new` to match strings. Special characters
 in the examples, such as the dot below, are escaped:
 
 ```ruby
-pattern = GrexRuby.generate(['a.b'])
+pattern = Grex.generate(['a.b'])
 # => "^a\\.b$"
 
 regexp = Regexp.new(pattern)
@@ -186,4 +190,4 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/sk8hig
 
 ## License
 
-GrexRuby is available under the [MIT License](LICENSE.txt).
+Grex is available under the [MIT License](LICENSE.txt).

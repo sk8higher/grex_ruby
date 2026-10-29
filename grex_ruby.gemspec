@@ -4,7 +4,7 @@ require_relative 'lib/grex_ruby/version'
 
 Gem::Specification.new do |spec|
   spec.name = 'grex_ruby'
-  spec.version = GrexRuby::VERSION
+  spec.version = Grex::VERSION
   spec.authors = ['Nelly Simkova']
   spec.email = ['sk8high3r@ya.ru']
   spec.license = 'MIT'

@@ -28,7 +28,7 @@ pub fn generate(
 
 #[magnus::init]
 fn init(ruby: &Ruby) -> Result<(), Error> {
-    let module = ruby.define_module("GrexRuby")?;
+    let module = ruby.define_module("Grex")?;
     module.define_singleton_method("generate_native", function!(generate, 3))?;
     Ok(())
 }

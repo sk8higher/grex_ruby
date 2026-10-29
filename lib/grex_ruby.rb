@@ -3,7 +3,7 @@
 require_relative 'grex_ruby/version'
 require 'grex_ruby/grex_ruby'
 
-module GrexRuby
+module Grex
   class Error < StandardError; end
 
   def self.generate(samples, convert_digits: false, convert_repetitions: false)

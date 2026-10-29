@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
-module GrexRuby
+module Grex
   VERSION = "0.1.0"
 end
+
+# Compatibility with the public module name used in version 0.1.0.
+GrexRuby = Grex

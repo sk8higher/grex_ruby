@@ -1,5 +1,7 @@
-module GrexRuby
+module Grex
   VERSION: String
 
   def self.generate: (Array[String], ?convert_digits: bool, ?convert_repetitions: bool) -> String
 end
+
+module GrexRuby = Grex
