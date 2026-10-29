@@ -47,12 +47,18 @@ Grex.generate(%w[cat])
 # => "^cat$"
 ```
 
-Both keyword options default to `false`:
+Keyword options:
 
-| Option                | Behavior when enabled                                           |
-| --------------------- | --------------------------------------------------------------- |
-| `convert_digits`      | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
-| `convert_repetitions` | Converts repeated substrings to quantifiers such as `{3}`.      |
+| Option | Default | Behavior |
+| --- | --- | --- |
+| `convert_digits` | `false` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
+| `convert_repetitions` | `false` | Converts repeated substrings to quantifiers such as `{3}`. |
+| `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
+| `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
+
+The two minimum settings affect generation when `convert_repetitions: true`.
+Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
+These settings will be available in the next release and are not part of 0.1.0.
 
 ```ruby
 Grex.generate(%w[123])
@@ -67,6 +73,25 @@ Grex.generate(['aaa'], convert_repetitions: true)
 Grex.generate(['111'], convert_digits: true, convert_repetitions: true)
 # => "^\\p{Nd}{3}$"
 ```
+
+Control which repetitions are converted:
+
+```ruby
+Grex.generate(['aaaa'], convert_repetitions: true, minimum_substring_length: 2)
+# => "^aaaa$"
+
+Grex.generate(['ababab'], convert_repetitions: true, minimum_substring_length: 2)
+# => "^(?:ab){3}$"
+
+Grex.generate(['aa'], convert_repetitions: true, minimum_repetitions: 2)
+# => "^aa$"
+
+Grex.generate(['aaa'], convert_repetitions: true, minimum_repetitions: 2)
+# => "^a{3}$"
+```
+
+For `minimum_repetitions`, the first occurrence is not counted as a repetition:
+`'aa'` has one repetition of `'a'`, while `'aaa'` has two.
 
 Digit conversion allows other decimal digits to match too, including non-ASCII
 digits. Grex adapts grex's `\d` tokens to `\p{Nd}` because Ruby's `\d` matches
