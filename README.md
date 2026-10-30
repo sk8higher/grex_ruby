@@ -63,6 +63,7 @@ Keyword options:
 | `anchors`                  | `true`  | Keeps grex's `^` and `$` line anchors; set to `false` to omit both.                                                                |
 | `start_anchor` | `true` | Keeps the initial `^` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
 | `end_anchor` | `true` | Keeps the final `$` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
+| `escape_non_ascii` | `false` | Writes non-ASCII characters as Unicode code point escapes understood by Ruby Regexp. |
 | `ignore_case`              | `false` | Generates a pattern that matches without regard to letter case.                                                                    |
 | `capturing_groups`         | `false` | Uses capturing groups instead of non-capturing groups.                                                                             |
 | `verbose`                  | `false` | Formats the pattern across multiple lines with indentation and enables extended mode.                                              |
@@ -232,6 +233,33 @@ regexp.match?('١')
 Letters, decimal digits, combining marks, connector punctuation such as `_`,
 and join controls are excluded. This option will be available in the next
 release and is not part of 0.1.0.
+
+### Escaping non-ASCII characters
+
+Set `escape_non_ascii: true` to represent non-ASCII characters using `\u{...}`
+escapes. The resulting pattern still matches the original characters:
+
+```ruby
+pattern = Grex.generate(['кот'], escape_non_ascii: true)
+# => "^\\u{43a}\\u{43e}\\u{442}$"
+
+Regexp.new(pattern).match?('кот')
+# => true
+
+pattern = Grex.generate(['🐈'], escape_non_ascii: true)
+# => "^\\u{1f408}$"
+
+Regexp.new(pattern).match?('🐈')
+# => true
+
+Grex.generate(['cat'], escape_non_ascii: true)
+# => "^cat$"
+```
+
+The default is `false`, leaving Unicode characters literal. Emoji are escaped
+as code points rather than UTF-16 surrogate pairs. This changes the pattern's
+representation, not the characters it matches. The option will be available in
+the next release and is not part of 0.1.0.
 
 ### Matching patterns
 

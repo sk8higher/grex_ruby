@@ -18,6 +18,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let convert_non_words: bool = options.fetch(ruby.to_symbol("convert_non_words"))?;
     let start_anchor: bool = options.fetch(ruby.to_symbol("start_anchor"))?;
     let end_anchor: bool = options.fetch(ruby.to_symbol("end_anchor"))?;
+    let escape_non_ascii: bool = options.fetch(ruby.to_symbol("escape_non_ascii"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -95,6 +96,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if !end_anchor {
         builder.without_end_anchor();
+    }
+
+    if escape_non_ascii {
+        builder.with_escaping_of_non_ascii_chars(false);
     }
 
     Ok(builder.build())

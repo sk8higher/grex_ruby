@@ -427,6 +427,37 @@ RSpec.describe Grex do
     expect(Regexp.new(pattern).match?('a cat sleeps')).to eq(true)
   end
 
+  it 'keeps non-ASCII characters literal by default' do
+    pattern = Grex.generate(['кот'])
+
+    expect(pattern).to include('кот')
+    expect(pattern).not_to include('\\u{')
+  end
+
+  it 'escapes Cyrillic characters while preserving matching behavior' do
+    pattern = Grex.generate(['кот'], escape_non_ascii: true)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to include('\\u{')
+    expect(pattern.ascii_only?).to eq(true)
+    expect(regexp.match?('кот')).to eq(true)
+    expect(regexp.match?('кит')).to eq(false)
+  end
+
+  it 'escapes emoji as a code point that Ruby Regexp can match' do
+    pattern = Grex.generate(['🐈'], escape_non_ascii: true)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to include('\\u{')
+    expect(pattern.ascii_only?).to eq(true)
+    expect(regexp.match?('🐈')).to eq(true)
+    expect(regexp.match?('🐕')).to eq(false)
+  end
+
+  it 'leaves ASCII characters unchanged when non-ASCII escaping is enabled' do
+    expect(Grex.generate(['cat'], escape_non_ascii: true)).to eq('^cat$')
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)

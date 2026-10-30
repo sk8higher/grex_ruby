@@ -21,10 +21,11 @@ module Grex
                     convert_words: false,
                     convert_non_words: false,
                     start_anchor: true,
-                    end_anchor: true)
+                    end_anchor: true,
+                    escape_non_ascii: false)
     pattern = generate_native(samples,
                               { convert_digits:, convert_repetitions:, minimum_substring_length:, minimum_repetitions:,
-                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace:, convert_non_whitespace:, convert_words:, convert_non_words:, start_anchor:, end_anchor: })
+                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace:, convert_non_whitespace:, convert_words:, convert_non_words:, start_anchor:, end_anchor:, escape_non_ascii: })
     adapt_pattern(pattern)
   end
 
