@@ -12,6 +12,7 @@ module Grex
     ?capturing_groups: bool,
     ?verbose: bool,
     ?convert_non_digits: bool,
+    ?convert_whitespace: bool,
   ) -> String
 end
 

@@ -237,6 +237,39 @@ RSpec.describe Grex do
     expect(regexp.match?('١٢٣')).to eq(false)
   end
 
+  it 'keeps literal whitespace by default' do
+    regexp = Regexp.new(Grex.generate(['a b']))
+
+    expect(regexp.match?('a b')).to eq(true)
+    expect(regexp.match?("a\tb")).to eq(false)
+  end
+
+  it 'generalizes spaces to other whitespace when convert_whitespace is enabled' do
+    regexp = Regexp.new(Grex.generate(['a b'], convert_whitespace: true))
+
+    expect(regexp.match?('a b')).to eq(true)
+    expect(regexp.match?("a\tb")).to eq(true)
+    expect(regexp.match?('ab')).to eq(false)
+    expect(regexp.match?('a-b')).to eq(false)
+  end
+
+  it 'matches Unicode whitespace when convert_whitespace is enabled' do
+    sample = "a\u00A0b" # NO-BREAK SPACE
+    regexp = Regexp.new(Grex.generate([sample], convert_whitespace: true))
+
+    expect(regexp.match?(sample)).to eq(true)
+    expect(regexp.match?("a\u2003b")).to eq(true) # EM SPACE
+    expect(regexp.match?('a b')).to eq(true)
+  end
+
+  it 'preserves a literal backslash followed by s when converting whitespace' do
+    regexp = Regexp.new(Grex.generate(['\\s', 'a b'], convert_whitespace: true))
+
+    expect(regexp.match?('\\s')).to eq(true)
+    expect(regexp.match?("a\tb")).to eq(true)
+    expect(regexp.match?('s')).to eq(false)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)
