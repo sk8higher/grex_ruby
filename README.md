@@ -54,6 +54,7 @@ Keyword options:
 | `convert_digits` | `false` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
 | `convert_non_digits` | `false` | Generalizes non-digit characters to the Unicode class `\P{Nd}`. |
 | `convert_whitespace` | `false` | Generalizes whitespace characters to the Unicode class `\p{Space}`. |
+| `convert_non_whitespace` | `false` | Generalizes non-whitespace characters to the Unicode class `\P{Space}`. |
 | `convert_repetitions` | `false` | Converts repeated substrings to quantifiers such as `{3}`. |
 | `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
 | `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
@@ -146,6 +147,32 @@ regexp.match?('ab')
 
 By default, a literal space remains a literal space. The `convert_whitespace`
 option will be available in the next release and is not part of 0.1.0.
+
+Use `convert_non_whitespace: true` to match any non-whitespace characters,
+including digits. Grex adapts grex's `\S` tokens to Ruby's Unicode class
+`\P{Space}`, which excludes both ASCII and Unicode whitespace:
+
+```ruby
+pattern = Grex.generate(['abc'], convert_non_whitespace: true)
+# => "^\\P{Space}\\P{Space}\\P{Space}$"
+
+regexp = Regexp.new(pattern)
+regexp.match?('xyz')
+# => true
+
+regexp.match?('123')
+# => true
+
+regexp.match?("a\tb")
+# => false
+
+regexp.match?("a\u00A0b") # NO-BREAK SPACE
+# => false
+```
+
+The `convert_non_whitespace` option defaults to `false` and will be available
+in the next release; it is not part of 0.1.0. Escaped literal backslashes are
+preserved during adaptation.
 
 Pass the returned pattern to `Regexp.new` to match strings. Special characters
 in the examples, such as the dot below, are escaped:
