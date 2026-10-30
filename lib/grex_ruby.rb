@@ -14,10 +14,11 @@ module Grex
                     anchors: true,
                     ignore_case: false,
                     capturing_groups: false,
-                    verbose: false)
+                    verbose: false,
+                    convert_non_digits: false)
     pattern = generate_native(samples,
                               { convert_digits:, convert_repetitions:, minimum_substring_length:, minimum_repetitions:,
-                                anchors:, ignore_case:, capturing_groups:, verbose: })
+                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits: })
     adapt_pattern(pattern)
   end
 
@@ -28,8 +29,11 @@ module Grex
 
     while index < chars.length
       if chars[index] == '\\'
-        result << if chars[index + 1] == 'd'
+        result << case chars[index + 1]
+                  when 'd'
                     '\p{Nd}'
+                  when 'D'
+                    '\P{Nd}'
                   else
                     chars[index, 2].join
                   end

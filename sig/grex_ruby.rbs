@@ -11,6 +11,7 @@ module Grex
     ?ignore_case: bool,
     ?capturing_groups: bool,
     ?verbose: bool,
+    ?convert_non_digits: bool,
   ) -> String
 end
 

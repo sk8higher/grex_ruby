@@ -124,10 +124,10 @@ RSpec.describe Grex do
   end
 
   it 'rejects a zero minimum_substring_length with ArgumentError' do
-    expect {
+    expect do
       Grex.generate(%w[aaaa],
                     minimum_substring_length: 0)
-    }.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
+    end.to raise_error(ArgumentError, 'minimum_substring_length must be greater than zero')
   end
 
   it 'leaves substrings with fewer repetitions than minimum_repetitions unconverted' do
@@ -143,10 +143,10 @@ RSpec.describe Grex do
   end
 
   it 'rejects a zero minimum_repetitions with ArgumentError' do
-    expect {
+    expect do
       Grex.generate(%w[aaaa],
                     minimum_repetitions: 0)
-    }.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
+    end.to raise_error(ArgumentError, 'minimum_repetitions must be greater than zero')
   end
 
   it 'matches within a larger string when anchors are disabled' do
@@ -210,6 +210,31 @@ RSpec.describe Grex do
     expect(pattern).to include("\n")
     expect(regexp.match?('cat')).to eq(true)
     expect(regexp.match?('dog')).to eq(true)
+  end
+
+  it 'generalizes non-digit characters when convert_non_digits is enabled' do
+    pattern = Grex.generate(['abc'], convert_non_digits: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('abc')).to eq(true)
+    expect(regexp.match?('xyz')).to eq(true)
+  end
+
+  it 'excludes ASCII and Unicode digits when converting non-digits' do
+    pattern = Grex.generate(['abc'], convert_non_digits: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('123')).to eq(false)
+    expect(regexp.match?('١٢٣')).to eq(false)
+  end
+
+  it 'preserves a literal backslash followed by D when converting non-digits' do
+    pattern = Grex.generate(['\\D', 'abc'], convert_non_digits: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('\\D')).to eq(true)
+    expect(regexp.match?('abc')).to eq(true)
+    expect(regexp.match?('١٢٣')).to eq(false)
   end
 
   it 'preserves literal spaces and hashes in verbose mode' do
