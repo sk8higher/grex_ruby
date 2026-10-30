@@ -344,6 +344,37 @@ RSpec.describe Grex do
     expect(regexp.match?('!w')).to eq(false)
   end
 
+  it 'keeps non-word characters literal by default' do
+    regexp = Regexp.new(Grex.generate(['!']))
+
+    expect(regexp.match?('!')).to eq(true)
+    expect(regexp.match?('?')).to eq(false)
+  end
+
+  it 'generalizes punctuation, whitespace and emoji when converting non-words' do
+    regexp = Regexp.new(Grex.generate(['!'], convert_non_words: true))
+
+    ['!', '?', ' ', "\t", '🐈'].each do |sample|
+      expect(regexp.match?(sample)).to eq(true)
+    end
+  end
+
+  it 'excludes ASCII and Unicode word characters when converting non-words' do
+    regexp = Regexp.new(Grex.generate(['!'], convert_non_words: true))
+
+    ['a', '7', '_', 'к', "\u0661", "\u0301", "\u200C", "\u200D"].each do |sample|
+      expect(regexp.match?(sample)).to eq(false)
+    end
+  end
+
+  it 'preserves a literal backslash followed by W when converting non-words' do
+    regexp = Regexp.new(Grex.generate(['\\W', '!'], convert_non_words: true))
+
+    expect(regexp.match?('\\W')).to eq(true)
+    expect(regexp.match?('!')).to eq(true)
+    expect(regexp.match?('aW')).to eq(false)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)

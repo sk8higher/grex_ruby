@@ -15,6 +15,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let convert_whitespace: bool = options.fetch(ruby.to_symbol("convert_whitespace"))?;
     let convert_non_whitespace: bool = options.fetch(ruby.to_symbol("convert_non_whitespace"))?;
     let convert_words: bool = options.fetch(ruby.to_symbol("convert_words"))?;
+    let convert_non_words: bool = options.fetch(ruby.to_symbol("convert_non_words"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -80,6 +81,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if convert_words {
         builder.with_conversion_of_words();
+    }
+
+    if convert_non_words {
+        builder.with_conversion_of_non_words();
     }
 
     Ok(builder.build())

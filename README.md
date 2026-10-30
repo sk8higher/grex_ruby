@@ -56,6 +56,7 @@ Keyword options:
 | `convert_whitespace`       | `false` | Generalizes whitespace characters to the Unicode class `\p{Space}`.                                                                |
 | `convert_non_whitespace`   | `false` | Generalizes non-whitespace characters to the Unicode class `\P{Space}`.                                                            |
 | `convert_words`            | `false` | Generalizes individual Unicode word characters, including letters, decimal digits, marks, connector punctuation and join controls. |
+| `convert_non_words` | `false` | Generalizes characters outside the Unicode word class, including punctuation, whitespace and emoji. |
 | `convert_repetitions`      | `false` | Converts repeated substrings to quantifiers such as `{3}`.                                                                         |
 | `minimum_substring_length` | `1`     | Minimum length of a repeated fragment eligible for conversion.                                                                     |
 | `minimum_repetitions`      | `1`     | Minimum number of repetitions after the fragment's first occurrence.                                                               |
@@ -200,6 +201,35 @@ grex's `\w` tokens with the explicit Unicode character class
 `[\p{Alpha}\p{M}\p{Nd}\p{Pc}\p{Join_Control}]`. Escaped literal backslashes
 are preserved. Unicode compatibility tests cover Cyrillic, non-ASCII digits,
 combining marks and join controls.
+
+### Non-word conversion
+
+`convert_non_words: true` generalizes individual characters outside the Unicode
+word class, including punctuation, whitespace and emoji. The default is `false`.
+The adapter replaces grex's `\W` tokens with
+`[^\p{Alpha}\p{M}\p{Nd}\p{Pc}\p{Join_Control}]`, preserving escaped literal
+backslashes.
+
+```ruby
+pattern = Grex.generate(['!'], convert_non_words: true)
+regexp = Regexp.new(pattern)
+
+regexp.match?('?')
+# => true
+
+regexp.match?('🐈')
+# => true
+
+regexp.match?('к')
+# => false
+
+regexp.match?('١')
+# => false
+```
+
+Letters, decimal digits, combining marks, connector punctuation such as `_`,
+and join controls are excluded. This option will be available in the next
+release and is not part of 0.1.0.
 
 ### Matching patterns
 
