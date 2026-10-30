@@ -58,6 +58,7 @@ Keyword options:
 | `anchors` | `true` | Keeps grex's `^` and `$` line anchors; set to `false` to omit both. |
 | `ignore_case` | `false` | Generates a pattern that matches without regard to letter case. |
 | `capturing_groups` | `false` | Uses capturing groups instead of non-capturing groups. |
+| `verbose` | `false` | Formats the pattern across multiple lines with indentation and enables extended mode. |
 
 The two minimum settings affect generation when `convert_repetitions: true`.
 Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
@@ -135,6 +136,46 @@ regexp.match('dog').captures
 This option changes groups created by grex; it does not force a group around
 every pattern. The `capturing_groups` and `ignore_case` options will be available
 in the next release and are not part of 0.1.0.
+
+### Verbose patterns
+
+Set `verbose: true` to generate a multiline pattern. Use `puts` to display
+the actual line breaks:
+
+```ruby
+pattern = Grex.generate(%w[cat dog], verbose: true)
+puts pattern
+```
+
+Output:
+
+```text
+(?x)
+^
+  (?:
+    cat
+    |
+    dog
+  )
+$
+```
+
+The inline `(?x)` flag enables extended mode: formatting whitespace is ignored
+and unescaped `#` starts a comment. grex escapes literal spaces and hashes from
+the input examples so that they still match:
+
+```ruby
+pattern = Grex.generate(['a b#c'], verbose: true)
+regexp = Regexp.new(pattern)
+
+regexp.match?('a b#c')
+# => true
+
+regexp.match?('ab#c')
+# => false
+```
+
+The `verbose` option will be available in the next release and is not part of 0.1.0.
 
 ### Anchors in Ruby
 

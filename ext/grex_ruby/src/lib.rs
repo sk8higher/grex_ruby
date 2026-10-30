@@ -10,6 +10,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let anchors: bool = options.fetch(ruby.to_symbol("anchors"))?;
     let ignore_case: bool = options.fetch(ruby.to_symbol("ignore_case"))?;
     let capturing_groups: bool = options.fetch(ruby.to_symbol("capturing_groups"))?;
+    let verbose: bool = options.fetch(ruby.to_symbol("verbose"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -55,6 +56,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if capturing_groups {
         builder.with_capturing_groups();
+    }
+
+    if verbose {
+        builder.with_verbose_mode();
     }
 
     Ok(builder.build())

@@ -10,6 +10,7 @@ module Grex
     ?anchors: bool,
     ?ignore_case: bool,
     ?capturing_groups: bool,
+    ?verbose: bool,
   ) -> String
 end
 

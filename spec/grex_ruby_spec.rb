@@ -202,4 +202,22 @@ RSpec.describe Grex do
     expect(regexp.match?('cat')).to eq(true)
     expect(regexp.match?('CAT')).to eq(false)
   end
+
+  it 'formats a working pattern across multiple lines in verbose mode' do
+    pattern = Grex.generate(%w[cat dog], verbose: true)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to include("\n")
+    expect(regexp.match?('cat')).to eq(true)
+    expect(regexp.match?('dog')).to eq(true)
+  end
+
+  it 'preserves literal spaces and hashes in verbose mode' do
+    pattern = Grex.generate(['a b#c'], verbose: true)
+    regexp = Regexp.new(pattern)
+
+    expect(regexp.match?('a b#c')).to eq(true)
+    expect(regexp.match?('ab#c')).to eq(false)
+    expect(regexp.match?('a b')).to eq(false)
+  end
 end
