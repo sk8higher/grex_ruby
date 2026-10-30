@@ -2,6 +2,96 @@
 # frozen_string_literal: true
 
 require 'grex_ruby'
+require 'optparse'
 
-path = ARGV.fetch(0)
-puts Grex.generate_from_file(path)
+options = {}
+
+parser = OptionParser.new do |opts|
+  opts.banner = 'Usage: grex-ruby FILE [options]'
+
+  opts.on('--convert-digits', 'Convert digits to a Unicode digit class') do
+    options[:convert_digits] = true
+  end
+
+  opts.on('--convert-non-digits', 'Convert non-digits to a Unicode character class') do
+    options[:convert_non_digits] = true
+  end
+
+  opts.on('--convert-whitespace', 'Convert whitespace to a Unicode character class') do
+    options[:convert_whitespace] = true
+  end
+
+  opts.on('--convert-non-whitespace', 'Convert non-whitespace to a Unicode character class') do
+    options[:convert_non_whitespace] = true
+  end
+
+  opts.on('--convert-words', 'Convert Unicode word characters') do
+    options[:convert_words] = true
+  end
+
+  opts.on('--convert-non-words', 'Convert characters outside the Unicode word class') do
+    options[:convert_non_words] = true
+  end
+
+  opts.on('--convert-repetitions', 'Convert repeated substrings to quantifiers') do
+    options[:convert_repetitions] = true
+  end
+
+  opts.on('--minimum-repetitions N', Integer, 'Minimum repetitions after the first occurrence (default: 1)') do |value|
+    options[:minimum_repetitions] = value
+  end
+
+  opts.on('--minimum-substring-length N', Integer, 'Minimum repeated fragment length (default: 1)') do |value|
+    options[:minimum_substring_length] = value
+  end
+
+  opts.on('--[no-]anchors', 'Keep both line anchors (default: enabled)') do |value|
+    options[:anchors] = value
+  end
+
+  opts.on('--[no-]start-anchor', 'Keep the initial line anchor (default: enabled)') do |value|
+    options[:start_anchor] = value
+  end
+
+  opts.on('--[no-]end-anchor', 'Keep the final line anchor (default: enabled)') do |value|
+    options[:end_anchor] = value
+  end
+
+  opts.on('-i', '--ignore-case', 'Match without regard to letter case') do
+    options[:ignore_case] = true
+  end
+
+  opts.on('--capturing-groups', 'Use capturing groups') do
+    options[:capturing_groups] = true
+  end
+
+  opts.on('-x', '--verbose', 'Format the pattern across multiple lines') do
+    options[:verbose] = true
+  end
+
+  opts.on('--escape-non-ascii', 'Escape non-ASCII characters as Unicode code points') do
+    options[:escape_non_ascii] = true
+  end
+
+  opts.on('-V', '--version', 'Show version') do
+    puts Grex::VERSION
+    exit
+  end
+
+  opts.on('-h', '--help', 'Show help') do
+    puts opts
+    exit
+  end
+end
+
+begin
+  parser.parse!
+  raise OptionParser::MissingArgument, 'FILE' if ARGV.empty?
+  raise OptionParser::InvalidArgument, 'expected exactly one FILE' unless ARGV.length == 1
+
+  puts Grex.generate_from_file(ARGV.first, **options)
+rescue OptionParser::ParseError, ArgumentError, RangeError, SystemCallError, EncodingError => error
+  warn "grex-ruby: #{error.message}"
+  warn 'Run grex-ruby --help for usage.'
+  exit 1
+end
