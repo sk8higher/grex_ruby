@@ -19,10 +19,11 @@ module Grex
                     convert_whitespace: false,
                     convert_non_whitespace: false,
                     convert_words: false,
-                    convert_non_words: false)
+                    convert_non_words: false,
+                    start_anchor: true)
     pattern = generate_native(samples,
                               { convert_digits:, convert_repetitions:, minimum_substring_length:, minimum_repetitions:,
-                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace:, convert_non_whitespace:, convert_words:, convert_non_words: })
+                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace:, convert_non_whitespace:, convert_words:, convert_non_words:, start_anchor: })
     adapt_pattern(pattern)
   end
 

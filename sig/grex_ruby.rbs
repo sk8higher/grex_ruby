@@ -16,6 +16,7 @@ module Grex
     ?convert_non_whitespace: bool,
     ?convert_words: bool,
     ?convert_non_words: bool,
+    ?start_anchor: bool,
   ) -> String
 end
 

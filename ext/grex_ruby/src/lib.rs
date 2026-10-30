@@ -16,6 +16,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let convert_non_whitespace: bool = options.fetch(ruby.to_symbol("convert_non_whitespace"))?;
     let convert_words: bool = options.fetch(ruby.to_symbol("convert_words"))?;
     let convert_non_words: bool = options.fetch(ruby.to_symbol("convert_non_words"))?;
+    let start_anchor: bool = options.fetch(ruby.to_symbol("start_anchor"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -85,6 +86,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if convert_non_words {
         builder.with_conversion_of_non_words();
+    }
+
+    if !start_anchor {
+        builder.without_start_anchor();
     }
 
     Ok(builder.build())

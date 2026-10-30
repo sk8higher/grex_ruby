@@ -375,6 +375,30 @@ RSpec.describe Grex do
     expect(regexp.match?('aW')).to eq(false)
   end
 
+  it 'removes only the start anchor when start_anchor is disabled' do
+    pattern = Grex.generate(['cat'], start_anchor: false)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to eq('cat$')
+    expect(regexp.match?('cat')).to eq(true)
+    expect(regexp.match?('a cat')).to eq(true)
+    expect(regexp.match?('cat sleeps')).to eq(false)
+  end
+
+  it 'keeps both anchors when start_anchor is explicitly enabled' do
+    pattern = Grex.generate(['cat'], start_anchor: true)
+
+    expect(pattern).to eq('^cat$')
+  end
+
+  it 'lets anchors false override an enabled start_anchor' do
+    pattern = Grex.generate(['cat'], anchors: false, start_anchor: true)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to eq('cat')
+    expect(regexp.match?('a cat sleeps')).to eq(true)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)
