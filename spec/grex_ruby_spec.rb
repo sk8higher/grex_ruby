@@ -302,6 +302,48 @@ RSpec.describe Grex do
     expect(regexp.match?("\u00A0S")).to eq(false)
   end
 
+  it 'keeps word characters literal by default' do
+    regexp = Regexp.new(Grex.generate(['a']))
+
+    expect(regexp.match?('a')).to eq(true)
+    expect(regexp.match?('b')).to eq(false)
+  end
+
+  it 'generalizes letters, digits and underscores when converting words' do
+    regexp = Regexp.new(Grex.generate(['a'], convert_words: true))
+
+    %w[a Z 7 _].each do |sample|
+      expect(regexp.match?(sample)).to eq(true)
+    end
+    expect(regexp.match?('-')).to eq(false)
+    expect(regexp.match?(' ')).to eq(false)
+  end
+
+  it 'matches Cyrillic examples when converting words' do
+    regexp = Regexp.new(Grex.generate(['кот'], convert_words: true))
+
+    expect(regexp.match?('кот')).to eq(true)
+    expect(regexp.match?('мир')).to eq(true)
+    expect(regexp.match?('!!!')).to eq(false)
+  end
+
+  it 'includes Unicode digits, combining marks and join controls in word characters' do
+    regexp = Regexp.new(Grex.generate(['a'], convert_words: true))
+
+    ["\u0661", "\u0301", "\u200C", "\u200D"].each do |sample|
+      expect(regexp.match?(sample)).to eq(true)
+    end
+    expect(regexp.match?('🐈')).to eq(false)
+  end
+
+  it 'preserves a literal backslash followed by w when converting words' do
+    regexp = Regexp.new(Grex.generate(['\\w', 'abc'], convert_words: true))
+
+    expect(regexp.match?('\\w')).to eq(true)
+    expect(regexp.match?('xyz')).to eq(true)
+    expect(regexp.match?('!w')).to eq(false)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)

@@ -49,19 +49,20 @@ Grex.generate(%w[cat])
 
 Keyword options:
 
-| Option | Default | Behavior |
-| --- | --- | --- |
-| `convert_digits` | `false` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
-| `convert_non_digits` | `false` | Generalizes non-digit characters to the Unicode class `\P{Nd}`. |
-| `convert_whitespace` | `false` | Generalizes whitespace characters to the Unicode class `\p{Space}`. |
-| `convert_non_whitespace` | `false` | Generalizes non-whitespace characters to the Unicode class `\P{Space}`. |
-| `convert_repetitions` | `false` | Converts repeated substrings to quantifiers such as `{3}`. |
-| `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
-| `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
-| `anchors` | `true` | Keeps grex's `^` and `$` line anchors; set to `false` to omit both. |
-| `ignore_case` | `false` | Generates a pattern that matches without regard to letter case. |
-| `capturing_groups` | `false` | Uses capturing groups instead of non-capturing groups. |
-| `verbose` | `false` | Formats the pattern across multiple lines with indentation and enables extended mode. |
+| Option                     | Default | Behavior                                                                                                                           |
+| -------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `convert_digits`           | `false` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`.                                                                    |
+| `convert_non_digits`       | `false` | Generalizes non-digit characters to the Unicode class `\P{Nd}`.                                                                    |
+| `convert_whitespace`       | `false` | Generalizes whitespace characters to the Unicode class `\p{Space}`.                                                                |
+| `convert_non_whitespace`   | `false` | Generalizes non-whitespace characters to the Unicode class `\P{Space}`.                                                            |
+| `convert_words`            | `false` | Generalizes individual Unicode word characters, including letters, decimal digits, marks, connector punctuation and join controls. |
+| `convert_repetitions`      | `false` | Converts repeated substrings to quantifiers such as `{3}`.                                                                         |
+| `minimum_substring_length` | `1`     | Minimum length of a repeated fragment eligible for conversion.                                                                     |
+| `minimum_repetitions`      | `1`     | Minimum number of repetitions after the fragment's first occurrence.                                                               |
+| `anchors`                  | `true`  | Keeps grex's `^` and `$` line anchors; set to `false` to omit both.                                                                |
+| `ignore_case`              | `false` | Generates a pattern that matches without regard to letter case.                                                                    |
+| `capturing_groups`         | `false` | Uses capturing groups instead of non-capturing groups.                                                                             |
+| `verbose`                  | `false` | Formats the pattern across multiple lines with indentation and enables extended mode.                                              |
 
 The two minimum settings affect generation when `convert_repetitions: true`.
 Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
@@ -173,6 +174,34 @@ regexp.match?("a\u00A0b") # NO-BREAK SPACE
 The `convert_non_whitespace` option defaults to `false` and will be available
 in the next release; it is not part of 0.1.0. Escaped literal backslashes are
 preserved during adaptation.
+
+### Word conversion
+
+`convert_words: true` generalizes
+individual Unicode word characters, rather than entire words. Word characters
+include letters, decimal digits, combining marks, connector punctuation such as
+`_`, and join controls.
+
+For example:
+
+```ruby
+pattern = Grex.generate(['кот'], convert_words: true)
+regexp = Regexp.new(pattern)
+
+regexp.match?('мир')
+# => true
+
+regexp.match?('!!!')
+# => false
+```
+
+The default is `false`. Since Ruby's `\w` is ASCII-only, the adapter replaces
+grex's `\w` tokens with the explicit Unicode character class
+`[\p{Alpha}\p{M}\p{Nd}\p{Pc}\p{Join_Control}]`. Escaped literal backslashes
+are preserved. Unicode compatibility tests cover Cyrillic, non-ASCII digits,
+combining marks and join controls.
+
+### Matching patterns
 
 Pass the returned pattern to `Regexp.new` to match strings. Special characters
 in the examples, such as the dot below, are escaped:
