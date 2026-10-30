@@ -20,6 +20,26 @@ module Grex
     ?end_anchor: bool,
     ?escape_non_ascii: bool,
   ) -> String
+
+  def self.generate_from_file: (
+    String,
+    ?convert_digits: bool,
+    ?convert_repetitions: bool,
+    ?minimum_substring_length: Integer,
+    ?minimum_repetitions: Integer,
+    ?anchors: bool,
+    ?ignore_case: bool,
+    ?capturing_groups: bool,
+    ?verbose: bool,
+    ?convert_non_digits: bool,
+    ?convert_whitespace: bool,
+    ?convert_non_whitespace: bool,
+    ?convert_words: bool,
+    ?convert_non_words: bool,
+    ?start_anchor: bool,
+    ?end_anchor: bool,
+    ?escape_non_ascii: bool,
+  ) -> String
 end
 
 module GrexRuby = Grex

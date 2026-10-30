@@ -63,7 +63,7 @@ module Grex
   end
 
   def self.generate_from_file(path, **options)
-    lines = File.readlines(path, chomp: true)
+    lines = File.readlines(path, encoding: 'UTF-8', chomp: true)
     generate(lines, **options)
   end
 
