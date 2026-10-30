@@ -62,5 +62,10 @@ module Grex
     result
   end
 
+  def self.generate_from_file(path, **options)
+    lines = File.readlines(path, chomp: true)
+    generate(lines, **options)
+  end
+
   private_class_method :generate_native, :adapt_pattern
 end
