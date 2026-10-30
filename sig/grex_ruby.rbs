@@ -6,7 +6,7 @@ module Grex
     ?convert_digits: bool,
     ?convert_repetitions: bool,
     ?minimum_substring_length: Integer,
-    ?minimum_repetitions: Integer
+    ?minimum_repetitions: Integer,
     ?anchors: bool,
     ?ignore_case: bool,
     ?capturing_groups: bool,

@@ -52,6 +52,7 @@ Keyword options:
 | Option | Default | Behavior |
 | --- | --- | --- |
 | `convert_digits` | `false` | Generalizes decimal digits to the Unicode digit class `\p{Nd}`. |
+| `convert_non_digits` | `false` | Generalizes non-digit characters to the Unicode class `\P{Nd}`. |
 | `convert_repetitions` | `false` | Converts repeated substrings to quantifiers such as `{3}`. |
 | `minimum_substring_length` | `1` | Minimum length of a repeated fragment eligible for conversion. |
 | `minimum_repetitions` | `1` | Minimum number of repetitions after the fragment's first occurrence. |
@@ -100,6 +101,28 @@ For `minimum_repetitions`, the first occurrence is not counted as a repetition:
 Digit conversion allows other decimal digits to match too, including non-ASCII
 digits. Grex adapts grex's `\d` tokens to `\p{Nd}` because Ruby's `\d` matches
 only ASCII digits.
+
+Use `convert_non_digits: true` to match non-digit characters. Ruby's Unicode
+class `\P{Nd}` excludes both ASCII and non-ASCII decimal digits:
+
+```ruby
+pattern = Grex.generate(['abc'], convert_non_digits: true)
+# => "^\\P{Nd}\\P{Nd}\\P{Nd}$"
+
+regexp = Regexp.new(pattern)
+regexp.match?('xyz')
+# => true
+
+regexp.match?('123')
+# => false
+
+regexp.match?('١٢٣')
+# => false
+```
+
+The `convert_non_digits` option will be available in the next release and is
+not part of 0.1.0. The adapter preserves escaped literal backslashes while
+converting grex's `\D` tokens to `\P{Nd}`.
 
 Pass the returned pattern to `Regexp.new` to match strings. Special characters
 in the examples, such as the dot below, are escaped:
