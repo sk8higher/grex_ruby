@@ -13,6 +13,7 @@ module Grex
     ?verbose: bool,
     ?convert_non_digits: bool,
     ?convert_whitespace: bool,
+    ?convert_non_whitespace: bool,
   ) -> String
 end
 

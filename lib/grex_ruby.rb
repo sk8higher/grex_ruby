@@ -16,10 +16,11 @@ module Grex
                     capturing_groups: false,
                     verbose: false,
                     convert_non_digits: false,
-                    convert_whitespace: false)
+                    convert_whitespace: false,
+                    convert_non_whitespace: false)
     pattern = generate_native(samples,
                               { convert_digits:, convert_repetitions:, minimum_substring_length:, minimum_repetitions:,
-                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace: })
+                                anchors:, ignore_case:, capturing_groups:, verbose:, convert_non_digits:, convert_whitespace:, convert_non_whitespace: })
     adapt_pattern(pattern)
   end
 
@@ -37,6 +38,8 @@ module Grex
                     '\P{Nd}'
                   when 's'
                     '\p{Space}'
+                  when 'S'
+                    '\P{Space}'
                   else
                     chars[index, 2].join
                   end

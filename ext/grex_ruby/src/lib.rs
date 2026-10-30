@@ -13,6 +13,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let verbose: bool = options.fetch(ruby.to_symbol("verbose"))?;
     let convert_non_digits: bool = options.fetch(ruby.to_symbol("convert_non_digits"))?;
     let convert_whitespace: bool = options.fetch(ruby.to_symbol("convert_whitespace"))?;
+    let convert_non_whitespace: bool = options.fetch(ruby.to_symbol("convert_non_whitespace"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -70,6 +71,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if convert_whitespace {
         builder.with_conversion_of_whitespace();
+    }
+
+    if convert_non_whitespace {
+        builder.with_conversion_of_non_whitespace();
     }
 
     Ok(builder.build())

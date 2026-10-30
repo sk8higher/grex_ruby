@@ -270,6 +270,38 @@ RSpec.describe Grex do
     expect(regexp.match?('s')).to eq(false)
   end
 
+  it 'keeps non-whitespace characters literal by default' do
+    regexp = Regexp.new(Grex.generate(['abc']))
+
+    expect(regexp.match?('abc')).to eq(true)
+    expect(regexp.match?('xyz')).to eq(false)
+  end
+
+  it 'generalizes non-whitespace characters including digits when enabled' do
+    regexp = Regexp.new(Grex.generate(['abc'], convert_non_whitespace: true))
+
+    expect(regexp.match?('abc')).to eq(true)
+    expect(regexp.match?('xyz')).to eq(true)
+    expect(regexp.match?('123')).to eq(true)
+  end
+
+  it 'excludes ASCII and Unicode whitespace when converting non-whitespace' do
+    regexp = Regexp.new(Grex.generate(['abc'], convert_non_whitespace: true))
+
+    expect(regexp.match?('a b')).to eq(false)
+    expect(regexp.match?("a\tb")).to eq(false)
+    expect(regexp.match?("a\u00A0b")).to eq(false)
+    expect(regexp.match?("a\u2003b")).to eq(false)
+  end
+
+  it 'preserves a literal backslash followed by S when converting non-whitespace' do
+    regexp = Regexp.new(Grex.generate(['\\S', 'abc'], convert_non_whitespace: true))
+
+    expect(regexp.match?('\\S')).to eq(true)
+    expect(regexp.match?('abc')).to eq(true)
+    expect(regexp.match?("\u00A0S")).to eq(false)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)
