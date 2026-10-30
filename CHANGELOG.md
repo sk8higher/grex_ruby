@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Add `Grex.generate_from_file` with UTF-8 input, LF/CRLF line handling and keyword options.
+- Add the `grex-ruby` command with flags for every generation option.
+- Add command-line help, version output and readable errors with nonzero exit status.
+- Document file input and command-line usage, including local development commands.
+- Add integration tests for the CLI and file-based generation.
+
 ## 0.2.0
 
 - Expose the public API as `Grex`, keeping `GrexRuby` as a compatibility alias.
