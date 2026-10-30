@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'grex_ruby'
+
+path = ARGV.fetch(0)
+puts Grex.generate_from_file(path)
