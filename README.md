@@ -401,6 +401,97 @@ An empty array raises `ArgumentError` with the message `samples must not be empt
 Passing a string instead of an array, or an array containing an integer, raises
 `TypeError`.
 
+## Reading examples from a file
+
+Starting with 0.3.0, `Grex.generate_from_file` reads a UTF-8 file with one example
+per line and accepts the same keyword options as `Grex.generate`:
+
+```ruby
+# samples.txt contains two lines: 123 and 234.
+Grex.generate_from_file('samples.txt', convert_digits: true)
+# => "^\\p{Nd}\\p{Nd}\\p{Nd}$"
+```
+
+LF and Windows CRLF line endings are removed; other whitespace is preserved.
+The last line does not need a newline. An empty file raises `ArgumentError`;
+a missing file raises `Errno::ENOENT`.
+
+## Command-line usage
+
+Version 0.3.0 adds the `grex-ruby` command. After installing the gem:
+
+```text
+grex-ruby --help
+grex-ruby --version
+grex-ruby samples.txt
+```
+
+Given a UTF-8 `samples.txt` containing:
+
+```text
+123
+234
+```
+
+Run:
+
+```text
+grex-ruby samples.txt --convert-digits
+```
+
+Output:
+
+```text
+^\p{Nd}\p{Nd}\p{Nd}$
+```
+
+Flags may appear before or after the file path, and can be combined:
+
+```text
+grex-ruby samples.txt --convert-digits --convert-repetitions --no-anchors
+```
+
+Output:
+
+```text
+\p{Nd}{3}
+```
+
+All generation options are available:
+
+| CLI flag | Ruby keyword |
+| --- | --- |
+| `--convert-digits` | `convert_digits: true` |
+| `--convert-non-digits` | `convert_non_digits: true` |
+| `--convert-whitespace` | `convert_whitespace: true` |
+| `--convert-non-whitespace` | `convert_non_whitespace: true` |
+| `--convert-words` | `convert_words: true` |
+| `--convert-non-words` | `convert_non_words: true` |
+| `--convert-repetitions` | `convert_repetitions: true` |
+| `--minimum-repetitions N` | `minimum_repetitions: N` |
+| `--minimum-substring-length N` | `minimum_substring_length: N` |
+| `--no-anchors` | `anchors: false` |
+| `--no-start-anchor` | `start_anchor: false` |
+| `--no-end-anchor` | `end_anchor: false` |
+| `-i`, `--ignore-case` | `ignore_case: true` |
+| `--capturing-groups` | `capturing_groups: true` |
+| `-x`, `--verbose` | `verbose: true` |
+| `--escape-non-ascii` | `escape_non_ascii: true` |
+
+Anchors are enabled by default. The positive forms `--anchors`, `--start-anchor`
+and `--end-anchor` are also accepted. As in the Ruby API, `--no-anchors` overrides
+the individual anchor settings. Numeric minimums must be positive 32-bit integers.
+
+The command accepts exactly one file path. Use `--` before a path that starts
+with `-`. Patterns are written to stdout; errors are written to stderr with exit
+status `1`. Successful generation, `--help`, and `--version` exit with status `0`.
+
+To run the CLI from a checkout before installing it:
+
+```bash
+bundle exec ruby -Ilib exe/grex-ruby samples.txt --convert-digits
+```
+
 ## Development
 
 ### Linux
