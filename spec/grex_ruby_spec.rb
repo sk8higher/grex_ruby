@@ -458,6 +458,62 @@ RSpec.describe Grex do
     expect(Grex.generate(['cat'], escape_non_ascii: true)).to eq('^cat$')
   end
 
+  conversion_options = %i[
+    convert_digits convert_non_digits convert_whitespace
+    convert_non_whitespace convert_words convert_non_words
+  ]
+
+  conversion_options.combination(2).each do |first, second|
+    it "preserves input samples when combining #{first} and #{second}" do
+      samples = ['a', '1', '١', ' ', "\t", '!', 'к', "\u0301", "\u200C", '🐈', '\\', '[', ']', '-', '&']
+      pattern = Grex.generate(samples, **{ first => true, second => true })
+      regexp = Regexp.new(pattern)
+
+      aggregate_failures do
+        samples.each do |sample|
+          expect(regexp.match?(sample)).to eq(true), "pattern #{pattern.inspect} did not match #{sample.inspect}"
+        end
+      end
+    end
+  end
+
+  it 'gives digit conversion priority over word conversion' do
+    regexp = Regexp.new(Grex.generate(['a1'], convert_digits: true, convert_words: true))
+
+    expect(regexp.match?('я٢')).to eq(true)
+    expect(regexp.match?('яa')).to eq(false)
+  end
+
+  it 'gives whitespace conversion priority over non-digit conversion' do
+    regexp = Regexp.new(Grex.generate(['a '], convert_whitespace: true, convert_non_digits: true))
+
+    expect(regexp.match?("!\t")).to eq(true)
+    expect(regexp.match?('!x')).to eq(false)
+    expect(regexp.match?('1 ')).to eq(false)
+  end
+
+  it 'gives digit conversion priority over non-whitespace conversion' do
+    regexp = Regexp.new(Grex.generate(['1!'], convert_digits: true, convert_non_whitespace: true))
+
+    expect(regexp.match?('١x')).to eq(true)
+    expect(regexp.match?('xx')).to eq(false)
+    expect(regexp.match?('١ ')).to eq(false)
+  end
+
+  it 'combines verbose formatting, case folding, repetitions and Unicode escaping' do
+    pattern = Grex.generate(%w[КК ДД], verbose: true, ignore_case: true,
+                                       convert_repetitions: true, escape_non_ascii: true)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to include("\n")
+    expect(pattern).to include('\\u{')
+    %w[КК ДД кк дд].each do |sample|
+      expect(regexp.match?(sample)).to eq(true)
+    end
+    expect(regexp.match?('КД')).to eq(false)
+    expect(regexp.match?('ККК')).to eq(false)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)

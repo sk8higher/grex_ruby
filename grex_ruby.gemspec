@@ -11,6 +11,9 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Ruby gem with bindings for Grex Rust library.'
   spec.homepage = 'https://github.com/sk8higher/grex_ruby'
+  spec.metadata['homepage_uri'] = spec.homepage
+  spec.metadata['source_code_uri'] = spec.homepage
+  spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/main/CHANGELOG.md"
   spec.required_ruby_version = '>= 3.2.0'
 
   # Uncomment the line below to require MFA for gem pushes.

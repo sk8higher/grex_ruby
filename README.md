@@ -34,8 +34,8 @@ ridk.cmd exec gem install grex_ruby
 `Grex.generate` accepts a non-empty array of strings and returns a Ruby `String`.
 
 The gem name and require path remain `grex_ruby`. `GrexRuby` is kept as an alias
-of `Grex` for compatibility with version 0.1.0. The `Grex` module name will be
-available in the next release; version 0.1.0 uses `GrexRuby`.
+of `Grex` for compatibility with version 0.1.0. The `Grex` module name is introduced
+in 0.2.0; version 0.1.0 uses `GrexRuby`.
 
 ```ruby
 require 'grex_ruby'
@@ -56,21 +56,20 @@ Keyword options:
 | `convert_whitespace`       | `false` | Generalizes whitespace characters to the Unicode class `\p{Space}`.                                                                |
 | `convert_non_whitespace`   | `false` | Generalizes non-whitespace characters to the Unicode class `\P{Space}`.                                                            |
 | `convert_words`            | `false` | Generalizes individual Unicode word characters, including letters, decimal digits, marks, connector punctuation and join controls. |
-| `convert_non_words` | `false` | Generalizes characters outside the Unicode word class, including punctuation, whitespace and emoji. |
+| `convert_non_words`        | `false` | Generalizes characters outside the Unicode word class, including punctuation, whitespace and emoji.                                |
 | `convert_repetitions`      | `false` | Converts repeated substrings to quantifiers such as `{3}`.                                                                         |
 | `minimum_substring_length` | `1`     | Minimum length of a repeated fragment eligible for conversion.                                                                     |
 | `minimum_repetitions`      | `1`     | Minimum number of repetitions after the fragment's first occurrence.                                                               |
 | `anchors`                  | `true`  | Keeps grex's `^` and `$` line anchors; set to `false` to omit both.                                                                |
-| `start_anchor` | `true` | Keeps the initial `^` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
-| `end_anchor` | `true` | Keeps the final `$` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
-| `escape_non_ascii` | `false` | Writes non-ASCII characters as Unicode code point escapes understood by Ruby Regexp. |
+| `start_anchor`             | `true`  | Keeps the initial `^` anchor; set to `false` to remove it. `anchors: false` overrides this setting.                                |
+| `end_anchor`               | `true`  | Keeps the final `$` anchor; set to `false` to remove it. `anchors: false` overrides this setting.                                  |
+| `escape_non_ascii`         | `false` | Writes non-ASCII characters as Unicode code point escapes understood by Ruby Regexp.                                               |
 | `ignore_case`              | `false` | Generates a pattern that matches without regard to letter case.                                                                    |
 | `capturing_groups`         | `false` | Uses capturing groups instead of non-capturing groups.                                                                             |
 | `verbose`                  | `false` | Formats the pattern across multiple lines with indentation and enables extended mode.                                              |
 
 The two minimum settings affect generation when `convert_repetitions: true`.
 Both accept integers from `1` to `4_294_967_295`; zero raises `ArgumentError`.
-These settings will be available in the next release and are not part of 0.1.0.
 
 ```ruby
 Grex.generate(%w[123])
@@ -127,8 +126,7 @@ regexp.match?('١٢٣')
 # => false
 ```
 
-The `convert_non_digits` option will be available in the next release and is
-not part of 0.1.0. The adapter preserves escaped literal backslashes while
+The adapter preserves escaped literal backslashes while
 converting grex's `\D` tokens to `\P{Nd}`.
 
 Use `convert_whitespace: true` to generalize spaces to other whitespace characters.
@@ -150,8 +148,7 @@ regexp.match?('ab')
 # => false
 ```
 
-By default, a literal space remains a literal space. The `convert_whitespace`
-option will be available in the next release and is not part of 0.1.0.
+By default, a literal space remains a literal space.
 
 Use `convert_non_whitespace: true` to match any non-whitespace characters,
 including digits. Grex adapts grex's `\S` tokens to Ruby's Unicode class
@@ -175,9 +172,8 @@ regexp.match?("a\u00A0b") # NO-BREAK SPACE
 # => false
 ```
 
-The `convert_non_whitespace` option defaults to `false` and will be available
-in the next release; it is not part of 0.1.0. Escaped literal backslashes are
-preserved during adaptation.
+The `convert_non_whitespace` option defaults to `false`. Escaped literal
+backslashes are preserved during adaptation.
 
 ### Word conversion
 
@@ -231,8 +227,7 @@ regexp.match?('١')
 ```
 
 Letters, decimal digits, combining marks, connector punctuation such as `_`,
-and join controls are excluded. This option will be available in the next
-release and is not part of 0.1.0.
+and join controls are excluded.
 
 ### Escaping non-ASCII characters
 
@@ -258,8 +253,7 @@ Grex.generate(['cat'], escape_non_ascii: true)
 
 The default is `false`, leaving Unicode characters literal. Emoji are escaped
 as code points rather than UTF-16 surrogate pairs. This changes the pattern's
-representation, not the characters it matches. The option will be available in
-the next release and is not part of 0.1.0.
+representation, not the characters it matches.
 
 ### Matching patterns
 
@@ -296,8 +290,7 @@ regexp.match('dog').captures
 ```
 
 This option changes groups created by grex; it does not force a group around
-every pattern. The `capturing_groups` and `ignore_case` options will be available
-in the next release and are not part of 0.1.0.
+every pattern.
 
 ### Verbose patterns
 
@@ -336,8 +329,6 @@ regexp.match?('a b#c')
 regexp.match?('ab#c')
 # => false
 ```
-
-The `verbose` option will be available in the next release and is not part of 0.1.0.
 
 ### Anchors in Ruby
 
@@ -400,13 +391,9 @@ Grex.generate(['cat'], anchors: false, start_anchor: true, end_anchor: true)
 # => "cat"
 ```
 
-The `start_anchor` and `end_anchor` options will be available in the next release
-and are not part of 0.1.0.
-
 Ruby's `\A` and `\z` anchor the entire string rather than individual lines.
 Grex preserves grex's line anchors and does not automatically replace them with
-`\A` and `\z`. The `anchors` option will be available in the next release;
-it is not part of 0.1.0.
+`\A` and `\z`.
 
 ### Invalid input
 
