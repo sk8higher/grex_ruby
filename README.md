@@ -62,6 +62,7 @@ Keyword options:
 | `minimum_repetitions`      | `1`     | Minimum number of repetitions after the fragment's first occurrence.                                                               |
 | `anchors`                  | `true`  | Keeps grex's `^` and `$` line anchors; set to `false` to omit both.                                                                |
 | `start_anchor` | `true` | Keeps the initial `^` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
+| `end_anchor` | `true` | Keeps the final `$` anchor; set to `false` to remove it. `anchors: false` overrides this setting. |
 | `ignore_case`              | `false` | Generates a pattern that matches without regard to letter case.                                                                    |
 | `capturing_groups`         | `false` | Uses capturing groups instead of non-capturing groups.                                                                             |
 | `verbose`                  | `false` | Formats the pattern across multiple lines with indentation and enables extended mode.                                              |
@@ -346,9 +347,33 @@ regexp.match?('cat sleeps')
 # => false
 ```
 
-`start_anchor` defaults to `true`. Setting `anchors: false` removes both anchors
-even if `start_anchor: true` is explicitly passed. The `start_anchor` option will
-be available in the next release and is not part of 0.1.0.
+Set `end_anchor: false` to remove only the final `$`, retaining the initial `^`:
+
+```ruby
+pattern = Grex.generate(['cat'], end_anchor: false)
+# => "^cat"
+
+regexp = Regexp.new(pattern)
+regexp.match?('cat sleeps')
+# => true
+
+regexp.match?('a cat')
+# => false
+
+Grex.generate(['cat'], start_anchor: false, end_anchor: false)
+# => "cat"
+```
+
+Both `start_anchor` and `end_anchor` default to `true`. Setting `anchors: false`
+removes both anchors even if the individual settings are explicitly `true`:
+
+```ruby
+Grex.generate(['cat'], anchors: false, start_anchor: true, end_anchor: true)
+# => "cat"
+```
+
+The `start_anchor` and `end_anchor` options will be available in the next release
+and are not part of 0.1.0.
 
 Ruby's `\A` and `\z` anchor the entire string rather than individual lines.
 Grex preserves grex's line anchors and does not automatically replace them with

@@ -17,6 +17,7 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
     let convert_words: bool = options.fetch(ruby.to_symbol("convert_words"))?;
     let convert_non_words: bool = options.fetch(ruby.to_symbol("convert_non_words"))?;
     let start_anchor: bool = options.fetch(ruby.to_symbol("start_anchor"))?;
+    let end_anchor: bool = options.fetch(ruby.to_symbol("end_anchor"))?;
 
     if samples.is_empty() {
         return Err(Error::new(
@@ -90,6 +91,10 @@ pub fn generate(ruby: &Ruby, samples: Vec<String>, options: RHash) -> Result<Str
 
     if !start_anchor {
         builder.without_start_anchor();
+    }
+
+    if !end_anchor {
+        builder.without_end_anchor();
     }
 
     Ok(builder.build())

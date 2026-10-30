@@ -399,6 +399,34 @@ RSpec.describe Grex do
     expect(regexp.match?('a cat sleeps')).to eq(true)
   end
 
+  it 'removes only the end anchor when end_anchor is disabled' do
+    pattern = Grex.generate(['cat'], end_anchor: false)
+    regexp = Regexp.new(pattern)
+
+    expect(pattern).to eq('^cat')
+    expect(regexp.match?('cat')).to eq(true)
+    expect(regexp.match?('cat sleeps')).to eq(true)
+    expect(regexp.match?('a cat')).to eq(false)
+  end
+
+  it 'keeps both anchors when end_anchor is explicitly enabled' do
+    expect(Grex.generate(['cat'], end_anchor: true)).to eq('^cat$')
+  end
+
+  it 'removes both anchors when the individual anchor options are disabled' do
+    pattern = Grex.generate(['cat'], start_anchor: false, end_anchor: false)
+
+    expect(pattern).to eq('cat')
+    expect(Regexp.new(pattern).match?('a cat sleeps')).to eq(true)
+  end
+
+  it 'lets anchors false override both enabled individual anchor options' do
+    pattern = Grex.generate(['cat'], anchors: false, start_anchor: true, end_anchor: true)
+
+    expect(pattern).to eq('cat')
+    expect(Regexp.new(pattern).match?('a cat sleeps')).to eq(true)
+  end
+
   it 'preserves literal spaces and hashes in verbose mode' do
     pattern = Grex.generate(['a b#c'], verbose: true)
     regexp = Regexp.new(pattern)

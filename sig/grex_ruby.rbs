@@ -17,6 +17,7 @@ module Grex
     ?convert_words: bool,
     ?convert_non_words: bool,
     ?start_anchor: bool,
+    ?end_anchor: bool,
   ) -> String
 end
 
