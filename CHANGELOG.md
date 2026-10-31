@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Add a documentation link to the GitHub README in RubyGems metadata.
+- Keep reproducible benchmarks in the repository and exclude them from the gem package.
+
 ## 0.3.0
 
 - Add `Grex.generate_from_file` with UTF-8 input, LF/CRLF line handling and keyword options.
