@@ -9,6 +9,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     ast (2.4.3)
+    benchmark (0.5.0)
     date (3.6.0)
     diff-lcs (1.6.2)
     erb (6.0.7)
@@ -91,6 +92,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  benchmark
   fiddle
   grex_ruby!
   irb
@@ -103,6 +105,7 @@ DEPENDENCIES
 
 CHECKSUMS
   ast (2.4.3) sha256=954615157c1d6a382bc27d690d973195e79db7f55e9765ac7c481c60bdb4d383
+  benchmark (0.5.0) sha256=465df122341aedcb81a2a24b4d3bd19b6c67c1530713fd533f3ff034e419236c
   date (3.6.0) sha256=18ac945c4e24ebd93534f8eab8c2fd8c5604b3e977105b3798d62a1e8d27b580
   diff-lcs (1.6.2) sha256=9ae0d2cba7d4df3075fe8cd8602a8604993efc0dfa934cff568969efb1909962
   erb (6.0.7) sha256=c5ca6dc25b0ef974a44dc8f59fe847577122483b1968a38dec305c60bf91ee92

@@ -1,0 +1,14 @@
+[package]
+name = "grex-direct-benchmark"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# Standalone: do not build the Ruby extension or change its dependency graph.
+[workspace]
+
+[dependencies]
+grex = "=1.4.6"
+
+[profile.release]
+debug = true

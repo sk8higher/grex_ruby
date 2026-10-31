@@ -584,6 +584,31 @@ bundle exec rake build
 The package is written to `pkg/grex_ruby-<version>.gem`. On Windows, run the
 command through `ridk.cmd exec` with the environment variables shown above.
 
+## Benchmarks
+
+Reproducible Ruby and standalone Rust benchmarks are in [`benchmark/`](benchmark/README.md).
+They share deterministic input datasets and check generated patterns outside
+the timed blocks. The Ruby benchmark separates native generation, pattern
+adaptation, and the full public API.
+
+Preliminary results for 1000 examples, in milliseconds per generation:
+
+| Dataset | Full Ruby API | Direct Rust grex |
+| --- | ---: | ---: |
+| Common prefix | 6.635 | 8.720 |
+| Random ASCII | 2587.141 | 2679.296 |
+| Random Unicode | 2566.244 | 2680.237 |
+
+Measured on an Intel Core i5-12450H, Windows x64, Ruby 4.0.7, rustc 1.99.1,
+and grex 1.4.6 with release builds and the GNU target. These short runs used
+two measured calls per case after warmup. They illustrate how input structure
+affects generation cost; they are not stable performance guarantees or a
+regex-matching benchmark. Direct Rust exhibited a similar cost on the random
+datasets, while the Ruby adapter took less than one millisecond.
+
+See the [benchmark instructions and detailed results](benchmark/README.md) for
+the exact datasets, commands, phase timings and limitations.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/sk8higher/grex_ruby.

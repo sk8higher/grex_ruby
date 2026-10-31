@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.files = IO.popen(%w[git ls-files -z], chdir: __dir__, err: IO::NULL) do |ls|
     ls.readlines("\x0", chomp: true).reject do |f|
       (f == gemspec) ||
-        f.start_with?(*%w[bin/ Gemfile .gitignore .rspec spec/])
+        f.start_with?(*%w[bin/ Gemfile .gitignore .rspec spec/ benchmark/])
     end
   end
   spec.files = (spec.files + ['LICENSE.txt', 'THIRD_PARTY_NOTICES.md'] + Dir['licenses/*.txt']).uniq

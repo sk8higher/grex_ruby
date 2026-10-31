@@ -21,3 +21,5 @@ gem 'prism', force_ruby_platform: true
 gem 'fiddle'
 
 gem 'rubocop', require: false
+
+gem 'benchmark', require: false
