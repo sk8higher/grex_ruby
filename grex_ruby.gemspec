@@ -14,6 +14,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = "#{spec.homepage}/blob/main/CHANGELOG.md"
+  spec.metadata['documentation_uri'] = 'https://github.com/sk8higher/grex_ruby#readme'
   spec.required_ruby_version = '>= 3.2.0'
 
   # Uncomment the line below to require MFA for gem pushes.
@@ -39,8 +40,8 @@ Gem::Specification.new do |spec|
 
   # Uncomment to register a new dependency of your gem
   # spec.add_dependency "example-gem", "~> 1.0"
-  spec.add_dependency 'rb_sys', '~> 0.9.128'
   spec.add_dependency 'optparse', '>= 0.3', '< 1.0'
+  spec.add_dependency 'rb_sys', '~> 0.9.128'
 
   # For more information and examples about making a new gem, check out our
   # guide at: https://guides.rubygems.org/make-your-own-gem/
